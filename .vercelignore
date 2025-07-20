@@ -14,7 +14,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # Build directories that will be generated during deployment
-client/build
 
 # Other files not needed for deployment
 .git
