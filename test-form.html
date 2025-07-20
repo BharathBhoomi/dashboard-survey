@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DHL Survey API Test Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #D40511; /* DHL Red */
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .rating-group {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+        .rating-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        button {
+            background-color: #FFCC00; /* DHL Yellow */
+            color: #000;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #D40511; /* DHL Red */
+            color: #fff;
+        }
+        #response {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            white-space: pre-wrap;
+            display: none;
+        }
+        .api-url-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>DHL Survey API Test Form</h1>
+    
+    <div class="api-url-group">
+        <label for="apiUrl">API URL:</label>
+        <input type="text" id="apiUrl" value="http://localhost:5000/api/surveys" />
+        <p><small>Change to your Vercel deployment URL when testing in production</small></p>
+    </div>
+
+    <form id="surveyForm">
+        <div class="form-group">
+            <label for="fullName">Full Name:</label>
+            <input type="text" id="fullName" name="fullName" required />
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required />
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone" name="phone" required />
+        </div>
+
+        <div class="form-group">
+            <label>How likely are you to recommend DHL to a friend or colleague? (1-5):</label>
+            <div class="rating-group">
+                <div class="rating-option">
+                    <input type="radio" id="recommend1" name="recommendationRating" value="1" required />
+                    <label for="recommend1">1</label>
+                </div>
+                <div class="rating-option">
+                    <input type="radio" id="recommend2" name="recommendationRating" value="2" />
+                    <label for="recommend2">2</label>
+                </div>
+                <div class="rating-option">
+                    <input type="radio" id="recommend3" name="recommendationRating" value="3" />
+                    <label for="recommend3">3</label>
+                </div>
+                <div class="rating-option">
+                    <input type="radio" id="recommend4" name="recommendationRating" value="4" />
+                    <label for="recommend4">4</label>
+                </div>
+                <div class="rating-option">
+                    <input type="radio" id="recommend5" name="recommendationRating" value="5" />
+                    <label for="recommend5">5</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>How satisfied were you with our service? (1-5):</label>
+            <div class="rating-group">
+                <div class="rating-option">
+                    <input type="radio" id="satisfy1" name="satisfactionRating" value="1" required />
+                    <label for="satisfy1">1</label>
+                </div>
+                <div class="rating-option">
+                    <input type="radio" id="satisfy2" name="satisfactionRating" value="2" />
+                    <label for="satisfy2">2</label>
+                </div>
+                <div class="rating-option">
+                    <input type="radio" id="satisfy3" name="satisfactionRating" value="3" />
+                    <label for="satisfy3">3</label>
+                </div>
+                <div class="rating-option">
+                    <input type="radio" id="satisfy4" name="satisfactionRating" value="4" />
+                    <label for="satisfy4">4</label>
+                </div>
+                <div class="rating-option">
+                    <input type="radio" id="satisfy5" name="satisfactionRating" value="5" />
+                    <label for="satisfy5">5</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="experience">Please describe your experience:</label>
+            <textarea id="experience" name="experience" rows="4" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="contactPermission">May we contact you about your feedback?</label>
+            <select id="contactPermission" name="contactPermission" required>
+                <option value="">Please select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="furtherInfoPermission">Would you like to receive further information from DHL?</label>
+            <select id="furtherInfoPermission" name="furtherInfoPermission" required>
+                <option value="">Please select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+        </div>
+
+        <button type="submit">Submit Survey</button>
+    </form>
+
+    <div id="response"></div>
+
+    <script>
+        document.getElementById('surveyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const apiUrl = document.getElementById('apiUrl').value;
+            const responseDiv = document.getElementById('response');
+            responseDiv.style.display = 'block';
+            responseDiv.innerHTML = 'Submitting...\n';
+            
+            // Collect form data
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                recommendationRating: document.querySelector('input[name="recommendationRating"]:checked').value,
+                satisfactionRating: document.querySelector('input[name="satisfactionRating"]:checked').value,
+                experience: document.getElementById('experience').value,
+                contactPermission: document.getElementById('contactPermission').value,
+                furtherInfoPermission: document.getElementById('furtherInfoPermission').value
+            };
+            
+            // Send data to API
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                responseDiv.innerHTML += `Status: ${response.status} ${response.statusText}\n`;
+                return response.json();
+            })
+            .then(data => {
+                responseDiv.innerHTML += 'Response:\n' + JSON.stringify(data, null, 2);
+                if (data._id) {
+                    responseDiv.innerHTML += '\n\nSurvey submitted successfully!';
+                }
+            })
+            .catch(error => {
+                responseDiv.innerHTML += `Error: ${error.message}`;
+            });
+        });
+    </script>
+</body>
+</html>
