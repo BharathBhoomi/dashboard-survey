@@ -142,15 +142,13 @@ app.get('/api/surveys', async (req, res) => {
   }
 });
 
-// Serve static assets in production
-if (process.env.NODE_ENV === 'production') {
-  // Set static folder
-  app.use(express.static('client/build'));
+// Serve static assets (always serve in Vercel)
+app.use(express.static(path.join(__dirname, 'client/build')));
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-  });
-}
+// Catch all handler: send back React's index.html file for any non-API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/build/index.html'));
+});
 
 const PORT = process.env.PORT || 5000;
 
